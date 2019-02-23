@@ -9,7 +9,7 @@ router.get('/', function(ctx, next) {
 router.get('/getRequest', function(ctx, next) {
   ctx.body = {
     url: ctx.request.url,
-    test: 2
+    test: 3
   }
 })
 
