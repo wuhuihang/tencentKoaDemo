@@ -7,7 +7,10 @@ router.get('/', function(ctx, next) {
 })
 
 router.get('/getRequest', function(ctx, next) {
-  ctx.body = ctx.request.url
+  ctx.body = {
+    url: ctx.request.url,
+    test: 2
+  }
 })
 
 router.get('/get', function(ctx, next) {
