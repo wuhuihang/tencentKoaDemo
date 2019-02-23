@@ -7,7 +7,7 @@ router.get('/', function(ctx, next) {
 })
 
 router.get('/getRequest', function(ctx, next) {
-  ctx.body = ctx.request
+  ctx.body = ctx.request.url
 })
 
 router.get('/get', function(ctx, next) {
