@@ -48,13 +48,13 @@ exports.addBlog = async (ctx, next) => {
       publishTime,
       title,
       content,
-      prevArchive: { id: lastBlogId, title: lastBlogTitle }
+      prevBlog: { id: lastBlogId, title: lastBlogTitle }
     })
     editResult = await Blog.update(
       { id: lastBlogId },
       {
         $set: {
-          nextArchive: {
+          nextBlog: {
             id: lastBlogId + 1,
             title: title
           }

@@ -18,14 +18,14 @@ const Blog = new Schema({
     require: true,
     default: ''
   },
-  prevArchive: {
+  prevBlog: {
     id: Number,
     title: {
       type: String,
       default: ''
     }
   },
-  nextArchive: {
+  nextBlog: {
     id: Number,
     title: {
       type: String,
