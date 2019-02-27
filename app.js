@@ -5,12 +5,24 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const mongoose = require('mongoose')
+const dbConfig = require('./app/dbs/config')
 
 const index = require('./routes/index')
-const users = require('./routes/users')
+const blogs = require('./routes/blogs')
 
 // error handler
 onerror(app)
+
+mongoose.connect(dbConfig.dbs, {
+  useNewUrlParser: true
+})
+
+let db = mongoose.connection
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', function() {
+  console.log('-------connect-------')
+})
 
 // middlewares
 app.use(
@@ -38,7 +50,7 @@ app.use(async (ctx, next) => {
 
 // routes
 app.use(index.routes(), index.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
+app.use(blogs.routes(), blogs.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

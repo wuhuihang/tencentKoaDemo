@@ -1,0 +1,14 @@
+const router = require('koa-router')()
+const blog = require('../app/controllers/blog')
+
+router.get('/blogs', blog.getBlogs)
+
+router.get('/blogs/:id', blog.getBlog)
+
+router.post('/blogs', blog.addBlog)
+
+router.del('/blogs/:id', blog.deleteBlog)
+
+router.put('/blogs/:id', blog.updateBlog)
+
+module.exports = router
