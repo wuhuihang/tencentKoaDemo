@@ -3,7 +3,10 @@ const Schema = mongoose.Schema
 
 const Blog = new Schema({
   id: Number,
-  year: String,
+  category: {
+    type: String,
+    require: true
+  },
   publishTime: {
     type: String,
     require: true

@@ -10,7 +10,7 @@ exports.getBlogs = async (ctx, next) => {
   } catch (e) {
     ctx.body = {
       code: -1,
-      data: {}
+      msg: '列表查询失败'
     }
   }
 }
@@ -18,21 +18,28 @@ exports.getBlogs = async (ctx, next) => {
 exports.getBlog = async (ctx, next) => {
   try {
     let result = await Blog.findOne({ id: ctx.params.id })
-    ctx.body = {
-      code: 0,
-      data: result ? result : {}
+    if (result) {
+      ctx.body = {
+        code: 0,
+        data: result
+      }
+    } else {
+      ctx.body = {
+        code: -1,
+        data: {},
+        msg: '博客不存在'
+      }
     }
   } catch (e) {
     ctx.body = {
       code: -1,
-      data: {}
+      msg: e
     }
   }
 }
 
 exports.addBlog = async (ctx, next) => {
-  let { publishTime, title, content } = ctx.request.body
-  let year = publishTime.split('-')[0]
+  let { category, publishTime, title, content } = ctx.request.body
   let blogs = await Blog.find()
   let blog
   let addResult
@@ -44,7 +51,7 @@ exports.addBlog = async (ctx, next) => {
     lastBlogTitle = lastBlog.title
     blog = new Blog({
       id: lastBlogId + 1,
-      year,
+      category,
       publishTime,
       title,
       content,
@@ -64,7 +71,7 @@ exports.addBlog = async (ctx, next) => {
   } else {
     blog = new Blog({
       id: 0,
-      year,
+      category,
       publishTime,
       title,
       content
@@ -76,12 +83,12 @@ exports.addBlog = async (ctx, next) => {
   if (addResult && editResult) {
     ctx.body = {
       code: 0,
-      msg: ''
+      msg: '创建成功'
     }
   } else {
     ctx.body = {
       code: -1,
-      msg: 'fail'
+      msg: '创建失败'
     }
   }
 }
@@ -91,11 +98,12 @@ exports.deleteBlog = async (ctx, next) => {
     if (err) {
       ctx.body = {
         code: -1,
-        data: {}
+        msg: '删除失败'
       }
     } else {
       ctx.body = {
-        code: 0
+        code: 0,
+        msg: '删除成功'
       }
     }
   })
@@ -111,12 +119,12 @@ exports.updateBlog = async (ctx, next) => {
   if (result) {
     ctx.body = {
       code: 0,
-      msg: ''
+      msg: '编辑成功'
     }
   } else {
     ctx.body = {
       code: -1,
-      msg: 'fail'
+      msg: '编辑失败'
     }
   }
 }
