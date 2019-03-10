@@ -6,15 +6,18 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const mongoose = require('mongoose')
-const dbConfig = require('./app/dbs/config')
+const jwt = require('koa-jwt')
+const tokenError = require('./app/middlreware/tokenError')
+const config = require('./app/config')
 
 const index = require('./routes/index')
 const blogs = require('./routes/blogs')
+const users = require('./routes/users')
 
 // error handler
 onerror(app)
 
-mongoose.connect(dbConfig.dbs, {
+mongoose.connect(config.dbs, {
   useNewUrlParser: true
 })
 
@@ -25,6 +28,7 @@ db.once('open', function() {
 })
 
 // middlewares
+app.use(tokenError())
 app.use(
   bodyparser({
     enableTypes: ['json', 'form', 'text']
@@ -33,6 +37,14 @@ app.use(
 app.use(json())
 app.use(logger())
 app.use(require('koa-static')(__dirname + '/public'))
+
+app.use(
+  jwt({
+    secret: config.tokenSecret
+  }).unless({
+    path: [/^\/login/, /^\/signOut/, /^\/outblogs/]
+  })
+)
 
 app.use(
   views(__dirname + '/views', {
@@ -51,6 +63,7 @@ app.use(async (ctx, next) => {
 // routes
 app.use(index.routes(), index.allowedMethods())
 app.use(blogs.routes(), blogs.allowedMethods())
+app.use(users.routes(), users.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {

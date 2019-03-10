@@ -1,5 +1,6 @@
 module.exports = {
-  dbs: 'mongodb://127.0.0.1:27017/test'
+  dbs: 'mongodb://127.0.0.1:27017/test',
+  tokenSecret: 'test'
   // ,redis:{
   //   get host(){
   //     return '127.0.0.1'
