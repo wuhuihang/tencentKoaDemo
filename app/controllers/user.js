@@ -19,14 +19,6 @@ exports.login = async ctx => {
     }
     return
   }
-  new User({
-    id: 0,
-    userName: 'admin',
-    hashedPassword:
-      'QTThQypCeRKFR6YAB67APDrVzYZNiFfK7mjmWUVt8BBqiZDrliHiRA09zAu95nGxRInwzk4TVSlnZv/eulhU7w==',
-    salt: '',
-    role: ''
-  }).save()
   try {
     let result = await User.findOne({ userName: userName })
     if (result) {
