@@ -2,7 +2,10 @@ const Blog = require('../dbs/models/blog')
 
 exports.getBlogs = async (ctx, next) => {
   try {
-    let result = await Blog.find()
+    let result = await Blog.find(
+      {},
+      { category: 1, id: 1, publishTime: 1, title: 1 }
+    )
     ctx.body = {
       code: 0,
       data: result ? result : []
