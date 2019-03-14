@@ -1,14 +1,19 @@
 const Blog = require('../dbs/models/blog')
 
 exports.getBlogs = async (ctx, next) => {
+  let currentPage = parseInt(ctx.query && ctx.query.currentPage) || 1
+  let pagesize = parseInt(ctx.query && ctx.query.pagesize) || 10
   try {
     let result = await Blog.find(
       {},
       { category: 1, id: 1, publishTime: 1, title: 1 }
     )
+      .skip(--currentPage * pagesize)
+      .limit(pagesize)
+      .sort('publishTime')
     ctx.body = {
       code: 0,
-      data: result ? result : []
+      data: { list: result ? result : [], count: await Blog.find().count() }
     }
   } catch (e) {
     ctx.body = {
