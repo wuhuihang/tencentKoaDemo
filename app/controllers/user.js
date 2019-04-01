@@ -20,18 +20,7 @@ exports.login = async ctx => {
     return
   }
   try {
-    // let result = await User.findOne({ userName: userName })
-    new User({
-      userName: 'admin',
-      hashedPassword:
-        'QTThQypCeRKFR6YAB67APDrVzYZNiFfK7mjmWUVt8BBqiZDrliHiRA09zAu95nGxRInwzk4TVSlnZv/eulhU7w==',
-      salt: 'whh'
-    }).save()
-    let result = {
-      hashedPassword:
-        'QTThQypCeRKFR6YAB67APDrVzYZNiFfK7mjmWUVt8BBqiZDrliHiRA09zAu95nGxRInwzk4TVSlnZv/eulhU7w==',
-      salt: 'whh'
-    }
+    let result = await User.findOne({ userName: userName })
     if (result) {
       let hashedPassword = result.hashedPassword,
         salt = result.salt,
