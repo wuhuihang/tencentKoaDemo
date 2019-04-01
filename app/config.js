@@ -1,6 +1,8 @@
 module.exports = {
-  // dbs: 'mongodb://127.0.0.1:27017/test',
-  dbs: 'mongodb://huihui:1106062107hH@127.0.0.1:27017/admin',
+  dbs:
+    process.env.NODE_ENV === "'development'"
+      ? 'mongodb://127.0.0.1:27017/test'
+      : 'mongodb://huihui:1106062107hH@127.0.0.1:27017/admin',
   tokenSecret: 'test'
   // ,redis:{
   //   get host(){
