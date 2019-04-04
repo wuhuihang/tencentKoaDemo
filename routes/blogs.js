@@ -15,4 +15,6 @@ router.del('/blogs/:id', blog.deleteBlog)
 
 router.put('/blogs/:id', blog.updateBlog)
 
+router.get('/dashboards', blog.getDashboard)
+
 module.exports = router

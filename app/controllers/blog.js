@@ -136,3 +136,66 @@ exports.updateBlog = async (ctx, next) => {
     }
   }
 }
+
+exports.getDashboard = async (ctx, next) => {
+  try {
+    let result = await Blog.find({}, { category: 1, publishTime: 1 })
+    if (result) {
+      let curDate = new Date(Date.now() + 3600000 * 8)
+      let year = curDate.getFullYear()
+      let month = curDate.getMonth() + 1
+      let line = {
+        month: [],
+        blogs: [0, 0, 0, 0, 0, 0]
+      }
+      let pie = []
+      let pieObj = {}
+      let categoryList = []
+      for (let i = 0; i < 6; i++) {
+        if (month < 1) {
+          month = 12
+          year--
+        }
+        line.month.push(`${year}-${(month < 10 ? '0' : '') + month--}`)
+      }
+      line.month.reverse()
+      result.forEach(item => {
+        let { category, publishTime } = item
+        let yearMonth = publishTime.slice(0, 7)
+        if (line.month.includes(yearMonth)) {
+          let index = line.month.indexOf(yearMonth)
+          line.blogs[index] = ++line.blogs[index]
+        }
+        if (!categoryList.includes(category)) {
+          categoryList.push(category)
+          pieObj[category] = 1
+        } else {
+          pieObj[category] = ++pieObj[category]
+        }
+      })
+      for (key in pieObj) {
+        pie.push({ name: key, value: pieObj[key] })
+      }
+      ctx.body = {
+        code: 0,
+        data: {
+          newBlogs: line.blogs[5],
+          line: line,
+          pie: pie,
+          date: curDate.toUTCString()
+        }
+      }
+    } else {
+      ctx.body = {
+        code: -1,
+        data: {},
+        msg: '数据为空'
+      }
+    }
+  } catch (e) {
+    ctx.body = {
+      code: -1,
+      msg: e
+    }
+  }
+}
