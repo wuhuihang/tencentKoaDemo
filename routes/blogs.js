@@ -17,4 +17,6 @@ router.put('/blogs/:id', blog.updateBlog)
 
 router.get('/dashboards', blog.getDashboard)
 
+router.get('/h5blogs', blog.getLatestBlogs)
+
 module.exports = router

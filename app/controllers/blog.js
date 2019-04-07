@@ -23,6 +23,23 @@ exports.getBlogs = async (ctx, next) => {
   }
 }
 
+exports.getLatestBlogs = async (ctx, next) => {
+  try {
+    let result = await Blog.find({}, { id: 1, publishTime: 1, title: 1 }).sort(
+      'publishTime'
+    )
+    ctx.body = {
+      code: 0,
+      data: { list: result ? result.reverse().slice(0, 3) : [] }
+    }
+  } catch (e) {
+    ctx.body = {
+      code: -1,
+      msg: '查询博客失败'
+    }
+  }
+}
+
 exports.getBlog = async (ctx, next) => {
   try {
     let result = await Blog.findOne({ id: ctx.params.id })

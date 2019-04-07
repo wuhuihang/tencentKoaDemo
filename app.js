@@ -42,7 +42,7 @@ app.use(
   jwt({
     secret: config.tokenSecret
   }).unless({
-    path: [/^\/login/, /^\/signOut/, /^\/outblogs/]
+    path: [/^\/login/, /^\/signOut/, /^\/outblogs/, /^\/h5/]
   })
 )
 
