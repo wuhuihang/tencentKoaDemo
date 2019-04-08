@@ -5,8 +5,7 @@
   "scripts": {
     "start": "set NODE_ENV=development&&nodemon bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
-    "prd": "pm2 start bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prd": "pm2 start bin/www"
   },
   "dependencies": {
     "debug": "^2.6.3",
