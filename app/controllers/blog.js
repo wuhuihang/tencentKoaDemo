@@ -43,10 +43,24 @@ exports.getLatestBlogs = async (ctx, next) => {
 exports.getBlog = async (ctx, next) => {
   try {
     let result = await Blog.findOne({ id: ctx.params.id })
+    let blogs = await Blog.find({}, { id: 1, title: 1 })
+    let ids = blogs.map(item => item.id)
+    let blogsLast = blogs.length - 1
+    let blogIndex = ids.indexOf(parseInt(ctx.params.id))
+    let blogBottom = {
+      prevBlog: {
+        title: blogIndex < 1 ? '' : blogs[blogIndex - 1].title,
+        id: blogIndex < 1 ? '' : blogs[blogIndex - 1].id
+      },
+      nextBlog: {
+        title: blogIndex === blogsLast ? '' : blogs[blogIndex + 1].title,
+        id: blogIndex === blogsLast ? '' : blogs[blogIndex + 1].id
+      }
+    }
     if (result) {
       ctx.body = {
         code: 0,
-        data: result
+        data: Object.assign(result, blogBottom)
       }
     } else {
       ctx.body = {
@@ -65,47 +79,18 @@ exports.getBlog = async (ctx, next) => {
 
 exports.addBlog = async (ctx, next) => {
   let { category, publishTime, title, content } = ctx.request.body
-  let blogs = await Blog.find()
-  let blog
-  let addResult
-  let editResult = true
+  let blogs = await Blog.find({}, { id: 1 })
+  let lastBlog = blogs.slice(-1)[0]
+  let blog = new Blog({
+    id: lastBlog ? lastBlog.id : 0,
+    category,
+    publishTime,
+    title,
+    content
+  })
+  let result = await blog.save()
 
-  if (blogs.length !== 0) {
-    let lastBlog = blogs[blogs.length - 1]
-    lastBlogId = lastBlog.id
-    lastBlogTitle = lastBlog.title
-    blog = new Blog({
-      id: lastBlogId + 1,
-      category,
-      publishTime,
-      title,
-      content,
-      prevBlog: { id: lastBlogId, title: lastBlogTitle }
-    })
-    editResult = await Blog.update(
-      { id: lastBlogId },
-      {
-        $set: {
-          nextBlog: {
-            id: lastBlogId + 1,
-            title: title
-          }
-        }
-      }
-    )
-  } else {
-    blog = new Blog({
-      id: 0,
-      category,
-      publishTime,
-      title,
-      content
-    })
-  }
-
-  addResult = await blog.save()
-
-  if (addResult && editResult) {
+  if (result) {
     ctx.body = {
       code: 0,
       msg: '创建成功'
